@@ -3,10 +3,8 @@
 #ADD target/workshop-pipelines.jar app.jar
 #ENTRYPOINT exec java $JAVA_OPTS -jar /app.jar
 
-FROM ubuntu
-MAINTAINER Pankaj
-RUN apt-get update
-RUN apt-get install -y nginx
-RUN apt-get clean
-EXPOSE 80
-CMD ["nginx"]
+FROM nginx
+RUN rm /etc/nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY content /usr/share/nginx/html
+COPY conf /etc/nginx
+VOLUME /var/log/nginx/log
