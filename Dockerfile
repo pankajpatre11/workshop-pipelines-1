@@ -3,8 +3,17 @@
 #ADD target/workshop-pipelines.jar app.jar
 #ENTRYPOINT exec java $JAVA_OPTS -jar /app.jar
 
-FROM nginx
-RUN rm /etc/nginx/nginx.conf /etc/nginx/conf.d/default.conf
-COPY content /usr/share/nginx/html
-COPY conf /etc/nginx
-VOLUME /var/log/nginx/log
+# Pull the minimal Ubuntu image
+FROM ubuntu
+
+# Install Nginx
+RUN apt-get -y update && apt-get -y install nginx
+
+# Copy the Nginx config
+COPY default /etc/nginx/sites-available/default
+
+# Expose the port for access
+EXPOSE 80/tcp
+
+# Run the Nginx server
+CMD ["/usr/sbin/nginx", "-g", "daemon off;"]
